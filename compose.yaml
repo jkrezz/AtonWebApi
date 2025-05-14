@@ -1,0 +1,37 @@
+﻿services:
+  atonwebapi:
+    image: atonwebapi
+    build:
+      context: .
+      dockerfile: AtonWebApi/Dockerfile
+    ports:
+      - "9090:9090"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://0.0.0.0:9090"
+      HTTP_PORTS: "9090"
+    depends_on:
+      - postgres
+    networks:
+      - aton-network
+
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '2025'
+      POSTGRES_DB: 'usersdb'
+    ports:
+      - "50000:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - aton-network
+
+volumes:
+  postgres-data:
+
+networks:
+  aton-network:
+    driver: bridge
